@@ -1,5 +1,4 @@
 import emailjs from "@emailjs/browser";
-
 import { useState } from "react";
 import { supabase } from "./supabase";
 
@@ -52,15 +51,19 @@ export default function App() {
         <br /><br />
         <button type="submit">Submit</button>
       </form>
+
+      {/* Appointment Booking Section */}
+      <h2>Book an Appointment</h2>
+      <iframe
+        src="https://calendly.com/katungu1"
+        width="100%"
+        height="600"
+        frameBorder="0"
+        title="Booking"
+      />
     </div>
   );
 }
-<h2>Book an Appointment</h2>
-<iframe
-  src="https://calendly.com/katungu1"
-  width="100%"
-  height="600"
-  frameBorder="0"
-></iframe>
+
 
 
