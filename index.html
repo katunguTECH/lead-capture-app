@@ -1,12 +1,38 @@
-<!-- Landbot Floating Chat -->
-<script>
-  window.addEventListener('DOMContentLoaded', function() {
-    var s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.async = true;
-    s.src = 'https://cdn.landbot.io/landbot-widget/YOUR_LANDBOT_ID.js';
-    var x = document.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(s, x);
-  });
-</script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lead Capture App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- Your Vite script -->
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Landbot script loader -->
+    <script src="https://cdn.landbot.io/landbot-3/landbot-3.0.0.js"></script>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        // Create container dynamically so React doesn't overwrite it
+        const botDiv = document.createElement('div');
+        botDiv.id = 'myLandbot';
+        botDiv.style.width = '100%';
+        botDiv.style.height = '500px';
+        document.body.appendChild(botDiv);
+
+        // Initialize Landbot
+        new Landbot.Container({
+          container: '#myLandbot',
+          configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3090419-7C0STPO35ZX7D4KW/index.json',
+        });
+      });
+    </script>
+  </body>
+</html>
+
+
 
