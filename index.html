@@ -12,13 +12,12 @@
     <!-- Your Vite script -->
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Landbot script loader -->
+    <!-- Landbot full embedded container (non-module version for Vercel compatibility) -->
     <script src="https://cdn.landbot.io/landbot-3/landbot-3.0.0.js"></script>
-
     <script>
       window.addEventListener('DOMContentLoaded', function () {
         // Create container dynamically so React doesn't overwrite it
-        const botDiv = document.createElement('div');
+        var botDiv = document.createElement('div');
         botDiv.id = 'myLandbot';
         botDiv.style.width = '100%';
         botDiv.style.height = '500px';
@@ -27,7 +26,8 @@
         // Initialize Landbot
         new Landbot.Container({
           container: '#myLandbot',
-          configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3090419-7C0STPO35ZX7D4KW/index.json',
+          configUrl:
+            'https://storage.googleapis.com/landbot.online/v3/H-3090419-7C0STPO35ZX7D4KW/index.json',
         });
       });
     </script>
