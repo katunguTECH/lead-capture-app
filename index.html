@@ -12,27 +12,25 @@
     <!-- Your Vite script -->
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Landbot full embedded container (non-module version for Vercel compatibility) -->
-    <script src="https://cdn.landbot.io/landbot-3/landbot-3.0.0.js"></script>
+    <!-- Landbot floating live chat -->
     <script>
       window.addEventListener('DOMContentLoaded', function () {
-        // Create container dynamically so React doesn't overwrite it
-        var botDiv = document.createElement('div');
-        botDiv.id = 'myLandbot';
-        botDiv.style.width = '100%';
-        botDiv.style.height = '500px';
-        document.body.appendChild(botDiv);
-
-        // Initialize Landbot
-        new Landbot.Container({
-          container: '#myLandbot',
-          configUrl:
-            'https://storage.googleapis.com/landbot.online/v3/H-3090419-7C0STPO35ZX7D4KW/index.json',
-        });
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://cdn.landbot.io/landbot-3/landbot-3.0.0.js';
+        s.onload = function () {
+          new Landbot.Livechat({
+            configUrl:
+              'https://storage.googleapis.com/landbot.online/v3/H-3090419-7C0STPO35ZX7D4KW/index.json',
+          });
+        };
+        document.body.appendChild(s);
       });
     </script>
   </body>
 </html>
+
 
 
 
