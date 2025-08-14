@@ -1,27 +1,25 @@
-<body>
-  <div id="root"></div>
+/* index.css or your widget-specific CSS */
 
-  <!-- Your Vite script -->
-  <script type="module" src="/src/main.jsx"></script>
-
-  <!-- Tidio Chat -->
-  <script src="//code.tidio.co/mq8ab8o9cw7ev9zk2do3pqm0v0jv4mxp.js" async></script>
-</body>
-</html>
-<!-- Tidio Chat -->
-<script src="//code.tidio.co/mq8ab8o9cw7ev9zk2do3pqm0v0jv4mxp.js" async></script>
-/* Ensure Tidio chat widget is always visible */
-#tidio-chat {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  z-index: 999999 !important; /* Keep it above all other elements */
-  /* Force Landbot chat bubble to stay visible */
-.landbot-button,
-.landbot-widget {
-  z-index: 999999 !important;
-  position: fixed !important;
-  iframe[src*="tawk.to"], #tawkchat-container {
-  z-index: 999999 !important;
+/* General reset or base styles */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
 }
+
+/* Chat widget positioning */
+.landbot-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  border: none;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
 
