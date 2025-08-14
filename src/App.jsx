@@ -1,15 +1,14 @@
-import LandbotChat from "./components/LandbotChat";
+import TawkChat from "./components/TawkChat";
 
-function App() {
+export default function App() {
   return (
     <>
-      <LandbotChat />
-      {/* Your form, Calendly, and other content */}
+      <TawkChat />
+      {/* Your other UI */}
     </>
   );
 }
 
-export default App;
 
 
 
