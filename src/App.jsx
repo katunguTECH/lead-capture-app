@@ -1,14 +1,13 @@
-import TawkChat from "./components/TawkChat";
+import ChatWidget from '../components/ChatWidget';
 
-export default function App() {
+function MyApp({ Component, pageProps }) {
   return (
     <>
-      <TawkChat />
-      {/* Your other UI */}
+      <Component {...pageProps} />
+      <ChatWidget /> {/* Chat appears on all pages */}
     </>
   );
 }
-
 
 
 
