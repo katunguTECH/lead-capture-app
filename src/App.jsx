@@ -1,13 +1,8 @@
-import ChatWidget from '../components/ChatWidget';
+// Correct import path (if ChatWidget.js is in src/components)
+import ChatWidget from './components/ChatWidget';
 
-function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <Component {...pageProps} />
-      <ChatWidget /> {/* Chat appears on all pages */}
-    </>
-  );
-}
+// Or if using a different structure:
+import ChatWidget from '../components/ChatWidget';
 
 
 
