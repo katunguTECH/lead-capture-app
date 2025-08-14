@@ -16,5 +16,10 @@
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 999999 !important; /* Keep it above all other elements */
+  /* Force Landbot chat bubble to stay visible */
+.landbot-button,
+.landbot-widget {
+  z-index: 999999 !important;
+  position: fixed !important;
 }
 
