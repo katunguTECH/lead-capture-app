@@ -1,21 +1,41 @@
-// src/components/ChatWidget.jsx
 import { useState, useEffect } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { ref, onValue } from "firebase/database"; // <-- for Realtime Database
 
 export default function ChatWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
+  const [themeColor, setThemeColor] = useState("#007BFF");
+  const [welcomeMessage, setWelcomeMessage] = useState("");
 
-  // Load messages
+  // Load settings from Realtime Database
+  useEffect(() => {
+    const settingsRef = ref(db, "settings");
+    onValue(settingsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data?.themeColor) setThemeColor(data.themeColor);
+      if (data?.welcomeMessage) setWelcomeMessage(data.welcomeMessage);
+    });
+  }, []);
+
+  // Load messages (Firestore)
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("createdAt"));
     const unsubscribe = onSnapshot(q, snapshot => {
-      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const loaded = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (loaded.length === 0 && welcomeMessage) {
+        loaded.push({
+          id: "welcome",
+          text: welcomeMessage,
+          sender: "bot"
+        });
+      }
+      setMessages(loaded);
     });
     return unsubscribe;
-  }, []);
+  }, [welcomeMessage]);
 
   // Send message
   const sendMessage = async () => {
@@ -23,12 +43,13 @@ export default function ChatWidget() {
       await addDoc(collection(db, "messages"), {
         text: input,
         createdAt: serverTimestamp(),
-        sender: "user" // could later be "bot" or "agent"
+        sender: "user"
       });
       setInput("");
     }
   };
 
+  // --- UI ---
   if (!isOpen) {
     return (
       <button
@@ -40,7 +61,7 @@ export default function ChatWidget() {
           borderRadius: "50%",
           width: "50px",
           height: "50px",
-          background: "#007BFF",
+          background: themeColor,
           color: "#fff",
           border: "none",
           boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
@@ -72,7 +93,7 @@ export default function ChatWidget() {
       {/* Header */}
       <div
         style={{
-          background: "#007BFF",
+          background: themeColor,
           color: "#fff",
           padding: "10px",
           display: "flex",
@@ -116,7 +137,7 @@ export default function ChatWidget() {
           >
             <div
               style={{
-                background: msg.sender === "user" ? "#007BFF" : "#e0e0e0",
+                background: msg.sender === "user" ? themeColor : "#e0e0e0",
                 color: msg.sender === "user" ? "#fff" : "#000",
                 padding: "8px 12px",
                 borderRadius: "15px",
@@ -130,12 +151,7 @@ export default function ChatWidget() {
       </div>
 
       {/* Input */}
-      <div
-        style={{
-          display: "flex",
-          borderTop: "1px solid #ddd"
-        }}
-      >
+      <div style={{ display: "flex", borderTop: "1px solid #ddd" }}>
         <input
           style={{
             flex: 1,
@@ -152,7 +168,7 @@ export default function ChatWidget() {
         <button
           onClick={sendMessage}
           style={{
-            background: "#007BFF",
+            background: themeColor,
             color: "#fff",
             border: "none",
             padding: "10px 15px",
@@ -165,3 +181,4 @@ export default function ChatWidget() {
     </div>
   );
 }
+
