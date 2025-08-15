@@ -1,7 +1,19 @@
+// src/components/ChatWidget.jsx
 import { useState, useEffect } from "react";
-import { db } from "../firebase";
-import { collection, addDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
-import { ref, onValue } from "firebase/database"; // <-- for Realtime Database
+import { firestore, realtimeDB } from "../firebase";
+
+// Firestore imports (for messages)
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp
+} from "firebase/firestore";
+
+// Realtime Database imports (for settings)
+import { ref, onValue } from "firebase/database";
 
 export default function ChatWidget() {
   const [messages, setMessages] = useState([]);
@@ -10,9 +22,9 @@ export default function ChatWidget() {
   const [themeColor, setThemeColor] = useState("#007BFF");
   const [welcomeMessage, setWelcomeMessage] = useState("");
 
-  // Load settings from Realtime Database
+  // Load theme & welcome message from Realtime Database
   useEffect(() => {
-    const settingsRef = ref(db, "settings");
+    const settingsRef = ref(realtimeDB, "settings");
     onValue(settingsRef, (snapshot) => {
       const data = snapshot.val();
       if (data?.themeColor) setThemeColor(data.themeColor);
@@ -20,27 +32,33 @@ export default function ChatWidget() {
     });
   }, []);
 
-  // Load messages (Firestore)
+  // Load chat messages from Firestore
   useEffect(() => {
-    const q = query(collection(db, "messages"), orderBy("createdAt"));
-    const unsubscribe = onSnapshot(q, snapshot => {
-      const loaded = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      if (loaded.length === 0 && welcomeMessage) {
-        loaded.push({
+    const q = query(collection(firestore, "messages"), orderBy("createdAt"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const loadedMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // If no messages yet, show welcome message from settings
+      if (loadedMessages.length === 0 && welcomeMessage) {
+        loadedMessages.push({
           id: "welcome",
           text: welcomeMessage,
           sender: "bot"
         });
       }
-      setMessages(loaded);
+      setMessages(loadedMessages);
     });
+
     return unsubscribe;
   }, [welcomeMessage]);
 
-  // Send message
+  // Send a message to Firestore
   const sendMessage = async () => {
     if (input.trim()) {
-      await addDoc(collection(db, "messages"), {
+      await addDoc(collection(firestore, "messages"), {
         text: input,
         createdAt: serverTimestamp(),
         sender: "user"
@@ -49,7 +67,7 @@ export default function ChatWidget() {
     }
   };
 
-  // --- UI ---
+  // Closed chat button
   if (!isOpen) {
     return (
       <button
@@ -74,6 +92,7 @@ export default function ChatWidget() {
     );
   }
 
+  // Open chat widget
   return (
     <div
       style={{
@@ -126,7 +145,7 @@ export default function ChatWidget() {
           background: "#f5f5f5"
         }}
       >
-        {messages.map(msg => (
+        {messages.map((msg) => (
           <div
             key={msg.id}
             style={{
@@ -137,7 +156,8 @@ export default function ChatWidget() {
           >
             <div
               style={{
-                background: msg.sender === "user" ? themeColor : "#e0e0e0",
+                background:
+                  msg.sender === "user" ? themeColor : "#e0e0e0",
                 color: msg.sender === "user" ? "#fff" : "#000",
                 padding: "8px 12px",
                 borderRadius: "15px",
@@ -181,4 +201,3 @@ export default function ChatWidget() {
     </div>
   );
 }
-

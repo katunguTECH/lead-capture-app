@@ -1,10 +1,13 @@
+// src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database"; // For Realtime DB
 
+// Your Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBvwhC7lxl7fTV2hISOWeK2-t2gxktZe2A",
   authDomain: "leadcapturechat.firebaseapp.com",
+  databaseURL: "https://leadcapturechat-default-rtdb.firebaseio.com", // Important: for Realtime DB
   projectId: "leadcapturechat",
   storageBucket: "leadcapturechat.firebasestorage.app",
   messagingSenderId: "572495631325",
@@ -12,8 +15,11 @@ const firebaseConfig = {
   measurementId: "G-SYZRN9LXFC"
 };
 
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
 
-export { app, analytics, db };
+// Export Firestore (for chat messages)
+export const firestore = getFirestore(app);
+
+// Export Realtime Database (for settings)
+export const realtimeDB = getDatabase(app);
