@@ -20,7 +20,9 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(true);
   const [themeColor, setThemeColor] = useState("#007BFF");
-  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [welcomeMessage, setWelcomeMessage] = useState(
+    "Hello? How may I help you today?"
+  );
 
   // Load theme & welcome message from Realtime Database
   useEffect(() => {
@@ -28,7 +30,9 @@ export default function ChatWidget() {
     onValue(settingsRef, (snapshot) => {
       const data = snapshot.val();
       if (data?.themeColor) setThemeColor(data.themeColor);
-      if (data?.welcomeMessage) setWelcomeMessage(data.welcomeMessage);
+      if (data?.welcomeMessage) {
+        setWelcomeMessage(data.welcomeMessage);
+      }
     });
   }, []);
 
@@ -216,4 +220,5 @@ export default function ChatWidget() {
     </div>
   );
 }
+
 
