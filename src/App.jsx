@@ -1,15 +1,13 @@
-import ChatWidget from './components/ChatWidget.jsx';
+import LeadCaptureSection from "./components/LeadCaptureSection";
 
-function App() {
+export default function Home() {
   return (
     <div>
-      <h1>Lead Capture App</h1>
-      <ChatWidget />
+      <LeadCaptureSection />
     </div>
   );
 }
 
-export default App;
 
 
 
