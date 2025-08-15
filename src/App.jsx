@@ -1,4 +1,3 @@
-// src/App.jsx
 import ChatWidget from './components/ChatWidget.jsx';
 
 function App() {
