@@ -18,7 +18,7 @@ import { ref, onValue } from "firebase/database";
 export default function ChatWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true); // ✅ Auto-open on page load
   const [themeColor, setThemeColor] = useState("#007BFF");
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Hello? How may I help you today?"
@@ -62,32 +62,7 @@ export default function ChatWidget() {
     }
   };
 
-  // Closed chat button
-  if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          borderRadius: "50%",
-          width: "50px",
-          height: "50px",
-          background: themeColor,
-          color: "#fff",
-          border: "none",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-          fontSize: "24px",
-          cursor: "pointer"
-        }}
-      >
-        💬
-      </button>
-    );
-  }
-
-  // Open chat widget
+  // Open chat widget (always starts open now)
   return (
     <div
       style={{
@@ -220,5 +195,6 @@ export default function ChatWidget() {
     </div>
   );
 }
+
 
 
