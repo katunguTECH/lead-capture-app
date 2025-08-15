@@ -1,8 +1,6 @@
 // src/components/ChatWidget.jsx
 import { useState, useEffect } from "react";
 import { firestore, realtimeDB } from "../firebase";
-
-// Firestore imports (for messages)
 import {
   collection,
   addDoc,
@@ -11,18 +9,50 @@ import {
   query,
   serverTimestamp
 } from "firebase/firestore";
-
-// Realtime Database imports (for settings)
 import { ref, onValue } from "firebase/database";
 
 export default function ChatWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [isOpen, setIsOpen] = useState(true); // ✅ Auto-open on page load
+  const [isOpen, setIsOpen] = useState(true); // Auto-open
   const [themeColor, setThemeColor] = useState("#007BFF");
   const [welcomeMessage, setWelcomeMessage] = useState(
     "Hello? How may I help you today?"
   );
+
+  // 🎤 Start listening for voice input
+  const startListening = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Your browser does not support speech recognition.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+    };
+  };
+
+  // 🔊 Speak a message
+  const speak = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    speechSynthesis.speak(utterance);
+  };
 
   // Load theme & welcome message from Realtime Database
   useEffect(() => {
@@ -32,6 +62,9 @@ export default function ChatWidget() {
       if (data?.themeColor) setThemeColor(data.themeColor);
       if (data?.welcomeMessage) {
         setWelcomeMessage(data.welcomeMessage);
+        speak(data.welcomeMessage); // Speak DB welcome message
+      } else {
+        speak(welcomeMessage); // Speak default welcome message
       }
     });
   }, []);
@@ -62,7 +95,6 @@ export default function ChatWidget() {
     }
   };
 
-  // Open chat widget (always starts open now)
   return (
     <div
       style={{
@@ -76,7 +108,8 @@ export default function ChatWidget() {
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        fontFamily: "Arial, sans-serif"
+        fontFamily: "Arial, sans-serif",
+        zIndex: 9999
       }}
     >
       {/* Header */}
@@ -174,11 +207,28 @@ export default function ChatWidget() {
             fontSize: "14px",
             outline: "none"
           }}
-          placeholder="Type your message..."
+          placeholder="Type your message or use voice..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && sendMessage()}
         />
+
+        {/* 🎤 Voice input button */}
+        <button
+          onClick={startListening}
+          style={{
+            background: themeColor,
+            color: "#fff",
+            border: "none",
+            padding: "10px 12px",
+            cursor: "pointer",
+            fontSize: "16px"
+          }}
+        >
+          🎤
+        </button>
+
+        {/* Send button */}
         <button
           onClick={sendMessage}
           style={{
@@ -195,6 +245,7 @@ export default function ChatWidget() {
     </div>
   );
 }
+
 
 
 
